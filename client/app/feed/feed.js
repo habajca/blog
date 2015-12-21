@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.feed', ['ngRoute'])
+angular.module('myApp.feed', ['ngRoute', 'myApp.blogPost', 'myApp.postsApi'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/feed', {
@@ -9,6 +9,6 @@ angular.module('myApp.feed', ['ngRoute'])
   });
 }])
 
-.controller('FeedCtrl', [function() {
-
+.controller('FeedCtrl', ['$scope', 'postsApi', function($scope, postsApi) {
+  $scope.posts = postsApi.get();
 }]);
