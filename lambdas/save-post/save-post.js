@@ -1,13 +1,14 @@
 console.log('Loading create post event.');
 
 var uuid = require('node-uuid');
+var moment = require('moment');
 
 var AWS = require('aws-sdk');
 var dynamodb = new AWS.DynamoDB();
 
 exports.handler = function(event, context) {
-  var tableName = "SimpleBlogPosts";
-  var timestamp = new Date().getTime().toString();
+  var tableName = "SimpleBlogPost";
+  var timestamp = moment().valueOf().toString();
 
   var item = {
     TableName: tableName,
