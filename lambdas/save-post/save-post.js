@@ -4,34 +4,27 @@ var uuid = require('node-uuid');
 var moment = require('moment');
 
 var AWS = require('aws-sdk');
-var dynamodb = new AWS.DynamoDB();
+var dynamodb = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = function(event, context) {
   var tableName = "SimpleBlogPost";
-  var timestamp = moment().valueOf().toString();
+  var timestamp = moment().valueOf();
 
   var item = {
     TableName: tableName,
     Item: {
-      postId: {
-        S: uuid.v4()
-      }, 
-      timestampUtc: {
-        N: timestamp
-      },
-      title: {
-        S: event.title,
-      },
-      content: {
-        S: event.content
-      },
-      userName: {
-        S: event.userName
-      },
-      userId: {
-        S: event.userId
-      }
+      postId: uuid.v4(), 
+      timestampUtc: timestamp,
+      title: event.title,
+      content: event.content,
+      userName: event.userName,
+      userId: event.userId
     }
   }
-  dynamodb.putItem(item, context.done);
+  dynamodb.put(item, function(err) {
+    if (err) {
+      return context.fail(err);
+    }
+    context.succeed({success: true});
+  });
 }
