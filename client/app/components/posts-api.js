@@ -1,15 +1,13 @@
 angular.module('myApp.postsApi', [])
 .service('postsApi', function() {
+  var posts = []
   return {
-    get: function() {
-      return [
-        {
-          title: 'This is a blog post',
-          user: 'a_user',
-          tags: ['example', 'first', 'tech', 'demo'],
-          content: 'This is a paragraph. It contains multiple sentences, but does not have to. It chooses to.\nThis is another paragraph.'
-        }
-      ];
+    query: function() {
+      return posts;
+    },
+    save: function(post, cb) {
+      posts = [post].concat(posts);
+      cb();
     }
   }
 });

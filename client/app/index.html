@@ -17,15 +17,25 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-  <div ng-view></div>
+  <div class="container">
+    <div class="header">
+      <h1>Simple-Blog</h1>
+      <p>A simple blog for everyone.</p>
+    </div>
+    <div class="row" ng-view></div>
+  </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="bower_components/angular-facebook/lib/angular-facebook.js"></script>
   <script src="app.js"></script>
   <script src="feed/feed.js"></script>
+  <script src="new-post/new-post.js"></script>
   <script src="components/blog-post/blog-post.js"></script>
   <script src="components/posts-api.js"></script>
+  <script src="components/login.js"></script>
+  <script src="components/alerts/alerts.js"></script>
 </body>
 </html>

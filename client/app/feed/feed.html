@@ -1,16 +1,16 @@
-<div class="container">
-  <div class="header">
-    <h1>Simple-Blog</h1>
-    <p>A simple blog for everyone.</p>
-  </div>
-  <div class="row">
-    <div class="col-sm-3 col-sm-offset-1 pull-right">
-      <a class="btn btn-primary" href="#" role="button">Log in to post</a>
+<div class="col-sm-3 col-sm-offset-1 pull-right">
+  <div ng-if="loginIsReady">
+    <div ng-if="isLoggedIn">
+      <a class="btn btn-success" href="#/new-post" role="button">Add a new post</a>
     </div>
-    <div class="col-sm-8">
-      <div ng-repeat="post in posts">
-        <my-blog-post post-title="{{post.title}}" post-user="{{post.user}}" post-content="{{post.content}}" />
-      </div>
+    <div ng-if="!isLoggedIn">
+      <a class="btn btn-primary" href="#" role="button" ng-click="logIn()">Log in to post</a>
     </div>
   </div>
-</div
+</div>
+<div class="col-sm-8">
+  <my-alerts></my-alerts>
+  <div ng-repeat="post in posts" class="container">
+    <my-blog-post post-title="{{post.title}}" post-user="{{post.user}}" post-content="{{post.content}}" />
+  </div>
+</div>

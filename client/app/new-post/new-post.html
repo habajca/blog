@@ -1,0 +1,28 @@
+<div ng-if="!isPreviewOpen">
+  <div class="col-sm-3 col-sm-offset-1 pull-right">
+    <a ng-click="openPreview()" class="btn btn-primary" role="button">Preview</a>
+  </div>
+  <div class="col-sm-8">
+    <my-alerts></my-alerts>
+    <div class="form-group">
+      <label for="postTitle">Title</label>
+      <input ng-model="post.title" type="text" class="form-control" id="postTitle" placeholder="A simple blog post" autofocus>
+    </div>
+    <div class="form-group">
+      <label for="postContent">Content</label>
+      <textarea ng-model="post.content" class="form-control" placeholder="I'm going to write something here and it's going to be great."></textarea>
+    </div>
+  </div>
+</div>
+<div ng-if="isPreviewOpen">
+  <div class="col-sm-3 col-sm-offset-1 pull-right">
+    <a ng-click="addPost()" class="btn btn-success" role="button">Post!</a>
+    <a ng-click="reEdit()" class="btn btn-default" role="button">Edit</a>
+  </div>
+  <div class="col-sm-8">
+    <my-alerts></my-alerts>
+    <div class="container">
+      <my-blog-post post-title="{{post.title}}" post-user="{{post.user}}" post-content="{{post.content}}" />
+    </div>
+  </div>
+</div>
