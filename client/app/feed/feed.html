@@ -10,7 +10,7 @@
 </div>
 <div class="col-sm-8">
   <my-alerts></my-alerts>
-  <div ng-repeat="post in posts" class="container">
-    <my-blog-post post-title="{{post.title}}" post-user="{{post.user}}" post-content="{{post.content}}" />
+  <div ng-repeat="post in posts">
+    <my-blog-post post-title="{{post.title}}" post-user="{{post.userName}}" post-content="{{post.content}}" />
   </div>
 </div>

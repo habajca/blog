@@ -11,22 +11,19 @@ angular.module('myApp.feed', ['ngRoute', 'myApp.blogPost', 'myApp.postsApi', 'my
     if (alerts.getSuccess()) {
       alerts.push({success: "Your post was added to the feed!"});
     }
-    $scope.posts = postsApi.query();
+    postsApi.query().then(function(posts) {
+      $scope.posts = posts;
+      $scope.$apply();
+    });
 
-    $scope.logIn = login.logIn;
-    $scope.loginIsReady = login.isReady();
-    $scope.user = login.getUser();
-    $scope.isLoggedIn = !!$scope.user;
-    $scope.$watch(function() {
-      return login.isReady();
-    }, function(newLoginIsReady) {
-      $scope.loginIsReady = newLoginIsReady;
-    });
-    $scope.$watch(function() {
-      return login.getUser();
-    }, function(newUser) {
-      $scope.user = newUser;
-      $scope.isLoggedIn = !!newUser;
-    });
+    var processLoginInfo = function(info) {
+      $scope.loginIsReady = true;
+      $scope.isLoggedIn = info.authenticated;
+    };
+    login.getInfo().then(processLoginInfo);
+    $scope.logIn = function() {
+      $scope.loginIsReady = false;
+      login.logIn().then(processLoginInfo);
+    };
   }
 ]);

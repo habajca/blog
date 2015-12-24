@@ -1,24 +1,64 @@
 angular.module('myApp.login', ['facebook'])
-.service('login', ['Facebook', function(Facebook) {
-  var isReady = false;
-  var user = false;
-  var facebookCallback = function(response) {
-    if (response.status === 'connected') {
-      Facebook.api('/me', function(response) {
-        user = response;
-        isReady = true;
+.service('login', ['$q', 'Facebook', function($q, Facebook) {
+  var currentPromise = false;
+  var cachedInfo = false;
+  var cacheInfo = function(info) {
+    cachedInfo = info;
+    return cachedInfo;
+  };
+  var getInfo = function() {
+    if (cachedInfo) {
+      return $q(function(resolve) {
+        resolve(cachedInfo);
       });
     } else {
-      user = false;
-      isReady = true;
+      return currentPromise;
     }
-  };
-  Facebook.getLoginStatus(facebookCallback);
+  }
+  var logIn = function(loginFunction) {
+    cachedInfo = false;
+    currentPromise = $q(function(resolve) {
+      loginFunction(function(response) {
+        resolve(response);
+      });
+    }).then(function resolveFacebook(response) {
+      if (response.status !== 'connected') {
+        return {};
+      }
+      return $q(function(resolve) {
+        var info = {facebook: {creds: response}};
+        Facebook.api('/me', function(response) {
+          info.facebook.user = response;
+          resolve(info);
+        })
+      });
+    }).then(function resolveAws(info) {
+      if (!info.facebook) {
+        return info;
+      }
+      return $q(function(resolve, reject) {
+        AWS.config.region = 'us-east-1';
+        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+          Logins: {
+            'graph.facebook.com': info.facebook.creds.authResponse.accessToken
+          },
+          IdentityPoolId: 'us-east-1:bb9c4ee2-b780-413a-a53b-72c0991aa289',
+          expired: true
+        });
+        AWS.config.credentials.get(function(err) {
+          if (err) {
+            return reject(err);
+          }
+          info.aws = AWS.config.credentials;
+          info.authenticated = true;
+          resolve(info);
+        });
+      });
+    }).then(cacheInfo);
+  }
+  logIn(Facebook.getLoginStatus);
   return {
-    logIn: function() {
-      Facebook.login(facebookCallback);
-    },
-    isReady: function() { return isReady; },
-    getUser: function() { return user; }
+    logIn: function() { return logIn(Facebook.login); },
+    getInfo: getInfo
   };
 }]);

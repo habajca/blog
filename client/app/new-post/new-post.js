@@ -8,13 +8,16 @@ angular.module('myApp.newPost', ['ngRoute', 'myApp.blogPost', 'myApp.postsApi', 
 .controller('NewPostCtrl', ['$scope', '$location', 'postsApi', 'login', 'alerts',
   function($scope, $location, postsApi, login, alerts) {
     alerts.refresh();
-    if (!login.getUser()) {
-      $location.path('/feed');
-      return;
-    }
+    login.getInfo().then(function(info) {
+      if (!info.authenticated) {
+        $location.path('/feed');
+      } else {
+        $scope.post = { userName: info.facebook.user.name, userId: info.facebook.user.id };
+        $scope.ready = true;
+      }
+    });
 
-    $scope.post = { user: login.getUser().name };
-
+    $scope.postPending = false;
     $scope.isPreviewOpen = false;
     $scope.openPreview = function() {
       alerts.refresh();
@@ -34,10 +37,11 @@ angular.module('myApp.newPost', ['ngRoute', 'myApp.blogPost', 'myApp.postsApi', 
     };
 
     $scope.addPost = function() {
+      $scope.postPending = true;
       alerts.refresh();
-      postsApi.save($scope.post, function() {
+      postsApi.save($scope.post).then(function(response) {
         $location.path('/feed');
-        alerts.success();
+        alerts.success()
       });
     };
     $scope.reEdit = function() {
