@@ -15,13 +15,9 @@ angular.module('myApp.login', ['facebook'])
       return currentPromise;
     }
   }
-  var logIn = function(loginFunction) {
+  var logIn = function(loginPromise) {
     cachedInfo = false;
-    currentPromise = $q(function(resolve) {
-      loginFunction(function(response) {
-        resolve(response);
-      });
-    }).then(function resolveFacebook(response) {
+    currentPromise = loginPromise.then(function resolveFacebook(response) {
       if (response.status !== 'connected') {
         return {};
       }
@@ -56,9 +52,19 @@ angular.module('myApp.login', ['facebook'])
       });
     }).then(cacheInfo);
   }
-  logIn(Facebook.getLoginStatus);
+  logIn($q(function(resolve) {
+    Facebook.getLoginStatus(function(result) {
+      resolve(result);
+    });
+  }));
   return {
-    logIn: function() { return logIn(Facebook.login); },
+    logIn: function() {
+      return logIn($q(function(resolve) {
+        Facebook.login(function(result) {
+          resolve(result);
+        });
+      }));
+    },
     getInfo: getInfo
   };
 }]);
