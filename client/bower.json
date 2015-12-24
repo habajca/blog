@@ -12,6 +12,7 @@
     "bootstrap": "~3.3.6",
     "angular-facebook": "~0.2.3",
     "lodash": "~3.10.1",
-    "aws-sdk": "aws-sdk-js#~2.2.26"
+    "aws-sdk": "aws-sdk-js#~2.2.26",
+    "angular-youtube-mb": "~1.1.1"
   }
 }

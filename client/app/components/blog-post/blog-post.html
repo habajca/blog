@@ -1,5 +1,19 @@
 <div>
   <h2 class="blog-post-title">{{title}}</h2>
   <p class="blog-post-meta">By {{user}}</p>
-  <p>{{content}}</p>
+  <div ng-repeat="element in decoratedContent track by $index">
+    <div ng-repeat="youtube in element.youtubes">
+      <youtube-video video-url="youtube" player="yt_video"></youtube-video>
+    </div>
+    <p>
+      <span ng-repeat="part in element.parts track by $index">
+        <a ng-if="part.url" href="{{part.url}}" target="_blank">
+          {{part.url}}
+        </a>
+        <span ng-if="part.normal">
+          {{part.normal}}
+        </span>
+      </span>
+    </p>
+  </div>
 </div>

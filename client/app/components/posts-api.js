@@ -14,12 +14,18 @@ angular.module('myApp.postsApi', ['myApp.login'])
     }
     return $q(function() { return saveClient });
   }
+  var decorateContent = function(content) {
+    return _.compact(content.split('\n'))
+  };
   return {
     query: function() {
       return queryClient.postsGet({}, {}, {}).then(function(response) {
         return _.sortBy(response.data, function(post) {
           return -post.timestampUtc;
-        });
+        }).map(function(post) {
+          post.decoratedContent = decorateContent(post.content);
+          return post;
+        })
       });
     },
     save: function(post) {
