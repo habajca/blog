@@ -17,12 +17,14 @@ angular.module('myApp.postsApi', ['myApp.login'])
   return {
     query: function() {
       return queryClient.postsGet({}, {}, {}).then(function(response) {
-        return response.data;
+        return _.sortBy(response.data, function(post) {
+          return -post.timestampUtc;
+        });
       });
     },
     save: function(post) {
       return getSaveClient().then(function(saveClient) {
-        return saveClient.postsPost({}, post, {})
+        return saveClient.postsPost({}, post, {});
       });
     }
   }
